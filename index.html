@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#101a18" />
+  <title>모스우드 원정대 — 작은 몬스터 RPG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Jua&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="모스우드 원정대 홈">
+        <span class="brand-mark">✳</span><span class="brand-copy"><b>MOSSWOOD</b><small>몬스터 원정대</small></span>
+      </a>
+      <div class="location"><span class="location-dot"></span><span>이끼숲 초원</span><span class="location-divider">/</span><span class="location-sub">남쪽 산책로</span></div>
+      <div class="top-actions"><div class="weather"><span>☀</span> 맑음 <i>·</i> 18°</div><button class="icon-button sound-toggle" id="soundToggle" aria-label="소리 켜기" title="소리 켜기">♫</button><button class="icon-button" id="helpBtn" aria-label="도움말" title="도움말">?</button></div>
+    </header>
+
+    <main class="game-layout">
+      <section class="world-card" aria-label="게임 월드">
+        <div class="world-heading"><div><span class="eyebrow">FIELD NOTE <span>01</span></span><h1>초록빛이 머무는 곳</h1></div><div class="day-chip"><span>DAY</span> 01 <i>☼</i></div></div>
+        <div class="canvas-wrap">
+          <canvas id="world" width="960" height="600" aria-label="이끼숲 초원 지도"></canvas>
+          <div class="scene-tag"><span class="scene-sun">☼</span><span>이끼숲 초원</span><span class="scene-tag-line"></span><small>맑은 날</small></div>
+          <div class="quest-toast" id="questToast" aria-live="polite"></div>
+          <div class="control-hint"><span class="keycap">W</span><span class="keycap">A</span><span class="keycap">S</span><span class="keycap">D</span><span class="hint-text">이동</span><span class="hint-sep">·</span><span class="keycap keycap-wide">SPACE</span><span class="hint-text">대화</span></div>
+          <div class="mobile-pad" aria-label="이동 패드">
+            <button data-dir="up" aria-label="위로 이동">▲</button><div><button data-dir="left" aria-label="왼쪽 이동">◀</button><button data-dir="down" aria-label="아래로 이동">▼</button><button data-dir="right" aria-label="오른쪽 이동">▶</button></div>
+          </div>
+          <div class="interaction-prompt" id="interactionPrompt"></div>
+          <div class="combat-layer hidden" id="combatLayer" aria-live="polite">
+            <div class="battle-topline"><span class="battle-label"><i></i> 야생 몬스터 발견</span><span class="battle-turn" id="battleTurn">YOUR TURN</span></div>
+            <div class="battle-stage">
+              <div class="enemy-info"><div class="enemy-title"><span id="enemyName">풀씨</span><span class="level-pill" id="enemyLevel">Lv. 3</span></div><div class="hp-track"><span id="enemyHpBar"></span></div><div class="hp-caption"><span>HP</span><b id="enemyHpText">18 / 18</b></div></div>
+              <div class="battle-monster" id="enemyArt"></div>
+              <div class="battle-ground"></div>
+              <div class="player-monster" id="playerArt"></div>
+              <div class="player-info"><div class="enemy-title"><span id="playerName">잎새</span><span class="level-pill" id="playerLevel">Lv. 3</span></div><div class="hp-track player-hp"><span id="playerHpBar"></span></div><div class="hp-caption"><span>HP</span><b id="playerHpText">24 / 24</b></div></div>
+            </div>
+            <div class="battle-bottom"><div class="battle-message" id="battleMessage">야생 풀씨가 나타났다!</div><div class="battle-actions" id="battleActions"></div></div>
+          </div>
+          <div class="dialogue hidden" id="dialogue"><div class="dialogue-avatar" id="dialogueAvatar">✦</div><div class="dialogue-content"><div class="dialogue-name" id="dialogueName">루미 연구원</div><p id="dialogueText"></p><button id="dialogueNext">계속 <span>↗</span></button></div></div>
+        </div>
+        <div class="world-footer"><div class="world-tip"><span class="tip-icon">✦</span><span id="worldTip">키보드 <b>WASD</b> 또는 방향키로 움직여 보세요.</span></div><div class="coordinates"><span class="pulse-dot"></span> FIELD <b id="coords">12, 11</b></div></div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="quest-card panel-card"><div class="panel-kicker"><span>오늘의 의뢰</span><span class="quest-number">01 / 03</span></div><div class="quest-title-row"><div class="quest-icon">✧</div><div><h2 id="questTitle">첫 번째 친구</h2><p id="questSub">루미의 도감을 도와주세요</p></div></div><div class="quest-progress"><div class="progress-track"><span id="questProgressBar"></span></div><b id="questProgressText">0 / 2</b></div><div class="quest-reward"><span>완료 보상</span><b>✦ 120 코인 <i>+</i> 포획 캡슐 ×3</b></div></section>
+
+        <section class="party-card panel-card"><div class="section-heading"><div><span class="section-icon green">♧</span><h2>나의 파티</h2></div><button class="text-button" id="partyDetails">상세 <span>↗</span></button></div><div class="party-list" id="partyList"></div><div class="party-foot"><span><i class="party-dot"></i><span id="partyCount">1</span> / 4 멤버</span><span class="coin-count"><span class="coin-symbol">◈</span> <b id="coins">60</b></span></div></section>
+
+        <section class="bag-card panel-card"><div class="section-heading"><div><span class="section-icon coral">▧</span><h2>탐험 가방</h2></div><span class="bag-count" id="bagCount">3 items</span></div><div class="item-row"><span class="item-icon capsule-icon">◉</span><span class="item-copy"><b>포획 캡슐</b><small>야생 몬스터를 포획해요</small></span><span class="item-qty" id="capsuleCount">× 5</span></div><div class="item-row"><span class="item-icon potion-icon">✚</span><span class="item-copy"><b>숲의 물약</b><small>파티 몬스터 HP 20 회복</small></span><span class="item-qty" id="potionCount">× 3</span></div></section>
+
+        <section class="guide-card"><span class="guide-spark">✦</span><div><b>풀숲을 살펴보세요</b><p>살랑이는 풀잎에 야생 몬스터가 숨어 있을지도 몰라요.</p></div><span class="guide-arrow">↗</span></section>
+      </aside>
+    </main>
+    <footer class="bottom-bar"><span>© MOSSWOOD FIELD CLUB</span><span class="footer-center"><span class="footer-leaf">❧</span> 천천히, 함께, 모험하기</span><button id="resetGame" class="reset-button">처음부터 <span>↺</span></button></footer>
+  </div>
+  <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal-card" id="modalCard"></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="game.js"></script>
+</body>
+</html>
